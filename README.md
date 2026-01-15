@@ -1,14 +1,14 @@
 # My approach
-The algorithm inferred from the [problem](https://adventofcode.com/2025/day/1) was simple, calculating the final position based upon the current value of the dial and the input then normalising it in the **0-99** range and counting for **zeros**. 
+The algorithm I inferred from the [problem](https://adventofcode.com/2025/day/1) was simple, calculating the final position based upon the current value of the dial and the input, then normalising it in the **0-99** range and counting for **zeros**. 
 The implementation involves basic arithmetic, addition, modulus etc.
 
-For the verilog simulation, I used a script to convert the inputs according to my needs, as Idk how to parse strings in verilog or in actual hardware. 
+For the verilog simulation, I used a script to convert the inputs according to my needs, as Idk how to "parse strings" in verilog or in actual hardware. 
 The script used can be found in the `/scripts/ipScript.cpp` and the generated `tb.txt` can be pasted into the `/verilog/day1p1_tb.v` appropriately for custom input testing!! 
 
-After sucessful verilog solution, I moved onto write the Hardcaml version, (Ik it's usually the other way around) :p !! Hardcaml generates (or **"constructs"**) verilog and the required hardware.
+After sucessful verilog solution, I moved onto write the Hardcaml version, (Ik it's usually the other way around) :p !! Hardcaml generates (or **"constructs"**) verilog for the required hardware.
 
 ---
-# Introduction about the Solution Flow
+# About the Solution Flow
 I've written most of the solutions of AoC'25 in C++. Came across the [Jane Street Blog](https://blog.janestreet.com/advent-of-fpga-challenge-2025/) recently and wanted to try out running algorithms on custom hardware for maximum optimizations. So, here is my solution submission for the **Advent of FPGA'25**:
 
 1. Firstly wrote the solutions in `cpp` for an algorithm/psedudo-code overview. The solutions can be found in `/cppSolutions`
@@ -24,17 +24,17 @@ I've written most of the solutions of AoC'25 in C++. Came across the [Jane Stree
 > NOTE: Heavy scope of optimization in the `modulo` module (calculates **n mod 100**), would read about it in depth and then implement it.
 
 ---
-# Scope of optimizations
+# Scope of optimization(s)
 The single biggest scope of optimization is in calculating the modulo. N mod M is expensive if M is not a perfect power of 2! Here, M=100. 
 I can think of this to optimize the modulo calculation (would surely implement in future)
 
 ```
 N = floor(N/100)*100 + N%100
 
-This implies, N%100 = N-floor(N/100)*100
+This implies, N%100 = N - floor(N/100)*100
 ```
 
-N/100 can be calculated optimally by **N*ceil(2^S/100) >> S** [Inspired from [Here](https://www.youtube.com/watch?v=ssDBqQ5f5_0)]. Here **S=37** is optimal.
+N/100 can be calculated optimally by `(N*ceil(2^S/100)) >> S` [Inspired from [Here](https://www.youtube.com/watch?v=ssDBqQ5f5_0)]. Here **S=37** is optimal.
 
 The current implementation (`assign variable = n%100`) is expensive in terms of both area and time and might not be synthesizable in some cases.
 
@@ -44,6 +44,8 @@ The current implementation (`assign variable = n%100`) is expensive in terms of 
 2. `day1p1.cpp` is the C++ solution of AoC'25 Day-1 **Part-1**
 3. `day1p2.cpp` is the C++ solution of AoC'25 Day-1 **Part-1**
 4. run with `g++` or any other cpp-compiler
+
+on command prompt:
 ```
 g++ day1p1.cpp
 a.exe < ip.txt
@@ -58,6 +60,7 @@ Answers to my set of inputs:
 
 ---
 # Simulating the Verilog solutions
+> My solution uses 32-bits for storing and calculating, I feel that it's a bit too much but just in case!!
 1. Navigate to the `/verilog` directory
 2. find the verilog codes and testbenches for
 
@@ -73,4 +76,11 @@ Answers to my set of inputs:
 ---
 # Hardcaml - Overview
 Learned from youtube and the resources provided in the [blog](https://blog.janestreet.com/advent-of-fpga-challenge-2025/) and tried to map the inferred hardware elements.
-Though Hardcaml (OCaml) is a **Hardware Construction Language** whose purpose is to generate **HDL** code like verilog for the designer, I obviously went the opposite way. Wrote verilog first then tried to write Hardcaml. Ngl OCaml made me a bit uncomfortable and forced me to come out of my comfort zone. Waiting eagerly for AoFPGA'26, wish to see myself implementing some core data structures like trees and graphs!!    
+
+Though Hardcaml (OCaml) is a **Hardware Construction Language** whose purpose is to generate **HDL** code like verilog for the designer, I obviously went the opposite way. Wrote verilog first then tried to write Hardcaml. 
+
+Ngl OCaml made me a bit uncomfortable and forced me to come out of my comfort zone. Waiting eagerly for AoFPGA'26, wish to see myself implementing some core data structures like trees and graphs in future!!
+
+---
+# Final Note
+Overall, enjoyed the challenge!!
